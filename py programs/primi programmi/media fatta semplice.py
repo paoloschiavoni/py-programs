@@ -6,8 +6,8 @@ while True:
         lista.append(num)
         a += 1
     except ValueError:
-        break
-somma=0
+        break  
+somma=0##########
 for el in lista:
     somma += el
 media= somma/a
