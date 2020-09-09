@@ -130,4 +130,4 @@ class Scossa_vs_comp(object):
             print('\nhai vinto\n')
             exit()      
 
-Scossa_vs_comp([[1, 3], [1, 3]])#il primo sarebbe il computer
+Scossa_vs_comp([[1, 1], [1, 1]])#il primo sarebbe il computer
