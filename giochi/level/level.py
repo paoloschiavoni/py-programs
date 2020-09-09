@@ -1,5 +1,5 @@
-#disegna man
-
+import os
+os.chdir('C:/users/Paolo.Schiavoni/source/repos/py programs/giochi/level')
 import pygame
 pygame.init()
 
