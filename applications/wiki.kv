@@ -1,0 +1,30 @@
+Screen:
+
+    GridLayout:
+        rows:4
+		
+		MDTextField:
+			id: mdtext
+			hint_text: "digita cosa stai cercando"
+			mode: "rectangle"
+		
+		MDRaisedButton:
+            text: "cerca articolo desiderato"
+            size_hint_x:1 #usato in percentuale
+			size_hint_y: 0.1
+			on_press: app.normal_search_button()
+
+        ScrollView:
+            MDLabel:
+                id: mdlab
+                text: "benvenuto su wikipedia reader"
+                #font_style: "H3"
+                #padding_x: 30
+                #size_hint_y: None
+                text_size: self.width, None#larghezza: larghezza in se, altezza illiminata, quindi posso avere lo scrolling
+
+        MDRaisedButton:
+            text: "cerca articolo casuale"
+            size_hint_x:1 #usato in percentuale
+            on_press: app.random_search_button()
+			size_hint_y: 0.1
