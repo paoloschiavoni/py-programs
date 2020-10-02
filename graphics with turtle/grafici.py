@@ -1,10 +1,11 @@
 from turtle import Turtle
 import math
 from math import *
+from find_fr_to_import import find_fraction
 
 class Grafico(Turtle):
     def __init__(self):
-        
+
         Turtle.__init__(self)
         Turtle.hideturtle(self)#per farla comparire all'inizio invisibile
         self.t=Turtle()
@@ -25,7 +26,7 @@ proporzionalità quadratica: y= ax**2 +bx +c\n\
 proporzionalità cubica: y= ax**3 +b\n\
 radicale: y= ardc( bx +c) +d\n\
 modulo: y= amdl( bx +c) +d\n\n')
-        
+
         self.disegna_assi()
         self.calcolatrice()
         self.analizza_equazione()
@@ -37,7 +38,7 @@ modulo: y= amdl( bx +c) +d\n\n')
         self.t.seth(0)
         self.t.down()
         self.t.forward(self.lunghezza)
-            
+
         self.t.seth(135)
         self.t.forward(10)
         self.t.seth(315)
@@ -148,6 +149,7 @@ modulo: y= amdl( bx +c) +d\n\n')
 
     def punti_int_cubica(self):
         self.int_x=self.radice_cubica(-self.tnoto/self.coeff)
+        self.int_x=find_fraction(self.int_x)
         self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -70)
         self.t.write('Il punto di intersezione con l\'asse x è: ', font=('Calibri', 17))
         self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -100)
@@ -155,6 +157,7 @@ modulo: y= amdl( bx +c) +d\n\n')
         self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -140)
         self.t.write('Il punto di intersezione con l\'asse y è: ', font=('Calibri', 17))
         self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -170)
+        self.tnoto=find_fraction(self.tnoto)
         self.t.write('(0.0, '+str(self.tnoto)+')', font=('Calibri', 17))
 
     def radice_cubica(self, x):
@@ -183,7 +186,7 @@ modulo: y= amdl( bx +c) +d\n\n')
                     self.lista_coeff1.append(el)
                 self.lista_coeff1.remove('x')
                 self.coeff1=float(''.join(self.lista_coeff1))
-            
+
             if not 'x' in membro and not 'y=' in membro:
                 self.tnoto=float(membro)
 
@@ -210,6 +213,7 @@ modulo: y= amdl( bx +c) +d\n\n')
     def punti_int_quadratica(self):
         if self.determinante==0:
             self.soluzione=-self.coeff1/(2*self.coeff2)
+            self.soluzione=find_fraction(self.soluzione)
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -70)
             self.t.write('Il punto di intersezione con l\'asse x è: ', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -100)
@@ -217,12 +221,15 @@ modulo: y= amdl( bx +c) +d\n\n')
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -140)
             self.t.write('Il punto di intersezione con l\'asse y è: ', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -170)
+            self.tnoto=find_fraction(self.tnoto)
             self.t.write('(0.0, '+str(self.tnoto)+')', font=('Calibri', 17))
 
         if self.determinante>0:
             self.soluzione1=(-self.coeff1 + math.sqrt(self.determinante))/(2*self.coeff2)
             self.soluzione2=(-self.coeff1 - math.sqrt(self.determinante))/(2*self.coeff2)
-            
+            self.soluzione1=find_fraction(self.soluzione1)
+            self.soluzione2=find_fraction(self.soluzione2)
+
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -70)
             self.t.write('I punti di intersezione con l\'asse x sono: ', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -100)
@@ -232,18 +239,20 @@ modulo: y= amdl( bx +c) +d\n\n')
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -170)
             self.t.write('Il punto di intersezione con \'asse y è: ', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -200)
+            self.tnoto=find_fraction(self.tnoto)
             self.t.write('(0.0, '+str(self.tnoto)+')', font=('Calibri', 17))
 
         if self.determinante<0:
+            self.tnoto=find_fraction(self.tnoto)
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -70)
             self.t.write('Il punto di intersezione con \'asse y è: ', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -100)
             self.t.write('(0.0, '+str(self.tnoto)+')', font=('Calibri', 17))
-            
+
 
     def analizza_retta(self):
         self.lista_coeff=[]
-        
+
         for membro in self.lista_membri_eq:
             if "x" in membro:
                 for el in membro:
@@ -271,7 +280,7 @@ modulo: y= amdl( bx +c) +d\n\n')
             self.t.goto(self.x, self.y)
             self.t.down()
             self.i+=3
-        
+
         self.t.up()
         self.punti_int_retta()
 
@@ -283,6 +292,7 @@ modulo: y= amdl( bx +c) +d\n\n')
             self.t.write('(0.0, 0.0)', font=('Calibri', 17))
         if self.tnoto!=0 and self.coeff!=0:
             self.intersezione_x=-self.tnoto/self.coeff
+            self.intersezione_x=find_fraction(self.intersezione_x)
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -70)
             self.t.write('Il punto di intersezione con l\'asse x è:', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -100)
@@ -290,8 +300,9 @@ modulo: y= amdl( bx +c) +d\n\n')
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -140)
             self.t.write('Il punto di intersezione con l\'asse y è:', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -170)
+            self.tnoto=find_fraction(self.tnoto)
             self.t.write('(0.0, '+str(self.tnoto)+')', font=('Calibri', 17))
-            
+
 
     def analizza_parallelax(self):
         for membro in self.lista_membri_eq:
@@ -323,11 +334,12 @@ modulo: y= amdl( bx +c) +d\n\n')
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -70)
             self.t.write('Il punto di intersezione con l\'asse y è:', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -100)
+            self.tnoto=find_fraction(self.tnoto)
             self.t.write('(0.0, '+str(self.tnoto)+')', font=('Calibri', 17))
 
     def analizza_inversa(self):
         self.lista_coeff=[]
-        
+
         for membro in self.lista_membri_eq:
             if '/' in membro:
                 for el in membro:
@@ -362,13 +374,13 @@ modulo: y= amdl( bx +c) +d\n\n')
         self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -70)
         self.t.write('Non ci sono punti di intersezione con gli assi', font=('Calibri', 17))
 
-        
+
 
     def analizza_radice(self):#è del tipo a*rdc(bx +c) +d
         self.lista_a=[]
         self.lista_b=[]
         self.lista_c=[]
-        
+
         for membro in self.lista_membri_eq:
             if 'rdc(' in membro:
                 for el in membro:
@@ -427,9 +439,10 @@ modulo: y= amdl( bx +c) +d\n\n')
                 self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -70)
                 self.t.write('Il punto di intersezione con l\'asse x è:', font=('Calibri', 17))
                 self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -100)
+                self.int_x=find_fraction(self.int_x)
                 self.t.write('('+str(self.int_x)+', 0.0)', font=('Calibri', 17))
 
-            if self.int_x*self.b + self.c<0:
+            elif self.int_x*self.b + self.c<0:
                 self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -70)
                 self.t.write('Non ci sono punti di intersezione con l\'asse x', font=('Calibri', 17))
 
@@ -442,6 +455,7 @@ modulo: y= amdl( bx +c) +d\n\n')
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -140)
             self.t.write('Il punto di intersezione con l\'asse y è:', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -170)
+            self.int_y=find_fraction(self.int_y)
             self.t.write('(0.0, '+str(self.int_y)+')', font=('Calibri', 17))
         if self.c<0:
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -140)
@@ -462,13 +476,13 @@ modulo: y= amdl( bx +c) +d\n\n')
                 self.lista_a.remove('l')
                 self.lista_a.remove('(')
                 self.a=float(''.join(self.lista_a))
-                
+
             if 'x' in membro:
                 for el in membro:
                     self.lista_b.append(el)
                 self.lista_b.remove('x')
                 self.b=float(''.join(self.lista_b))
-                
+
             if ')' in membro:
                 for el in membro:
                     self.lista_c.append(el)
@@ -500,38 +514,45 @@ modulo: y= amdl( bx +c) +d\n\n')
     def punti_int_modulo(self):
 
         self.int_y=self.a*abs(self.c)+self.tnoto
-        
+
         if -self.tnoto/self.a>0 and self.b!=0:#ha punti di intersezione con x
             self.soluzione1=((self.tnoto/self.a)-self.c)/self.b
             self.soluzione2=((-self.tnoto/self.a)-self.c)/self.b
-            
+
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -70)
             self.t.write('I punti di intersezione con l\'asse x sono:', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -100)
+            self.soluzione1=find_fraction(self.soluzione1)
             self.t.write('('+str(self.soluzione1)+', 0.0)', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -130)
+            self.soluzione2=find_fraction(self.soluzione2)
             self.t.write('('+str(self.soluzione2)+', 0.0)', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -170)
             self.t.write('Il punto di intersezione con l\'asse y è:', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -200)
+            self.int_y=find_fraction(self.int_y)
             self.t.write('(0.0, '+str(self.int_y)+')', font=('Calibri', 17))
 
         if self.tnoto==0 and self.a!=0 and self.b!=0:
-            self.soluzione=-self.c/self.b            
+            self.soluzione=-self.c/self.b
 
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -70)
             self.t.write('Il punto di intersezione con l\'asse x è:', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -100)
+            self.soluzione=find_fraction(self.solzione)
             self.t.write('('+str(self.soluzione)+', 0.0)', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -140)
             self.t.write('Il punto di intersezione con l\'asse y è:', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -170)
+            self.int_y=find_fraction(self.int_y)
             self.t.write('(0.0, '+str(self.int_y)+')', font=('Calibri', 17))
 
         if -self.tnoto/self.a<0:
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -70)
             self.t.write('Il punto di intersezione con l\'asse y è:', font=('Calibri', 17))
             self.t.goto(-self.lunghezza/2 +20, self.altezza/2 -100)
+            self.int_y=find_fraction(self.int_y)
             self.t.write('(0.0, '+str(self.int_y)+')', font=('Calibri', 17))
 
 Grafico()
+fine=input('>>> ')
