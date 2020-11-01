@@ -502,7 +502,7 @@ modulo: y= amdl( bx +c) +d\n\n')
             self.disegna_modulo()
 
     def disegna_modulo(self):
-        for i in range(round(-self.lunghezza/2), round(self.lunghezza/2)):
+        for i in range(round(-self.lunghezza/2), round(self.lunghezza/2), 10):
             self.x=i
             self.y=self.a*abs((self.x*self.b)+self.c)+ self.tnoto
 
