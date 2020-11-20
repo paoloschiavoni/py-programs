@@ -13,8 +13,8 @@ search_box=driver.find_element_by_xpath("//*[@id='side']/div[1]/div/label/div/di
 search_box.send_keys(contatto)
 search_box.send_keys(Keys.ENTER)
 
-for i in range(5000):
+for i in range(300):
     msg_box=driver.find_element_by_xpath("//*[@id='main']/footer/div[1]/div[2]/div/div[2]")
-    msg_box.send_keys('i')
+    msg_box.send_keys('f')
     msg_box.send_keys(Keys.ENTER)
 driver.quit()

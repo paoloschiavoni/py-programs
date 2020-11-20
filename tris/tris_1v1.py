@@ -7,7 +7,7 @@ class Tris1v1(Frame):
         self.count=0
 
         self.master.title("Tris")
-        
+
         self.b1=Button(self, text="    ", command=self.change1)
         self.b2=Button(self, text="    ", command=self.change2)
         self.b3=Button(self, text="    ", command=self.change3)
@@ -34,7 +34,7 @@ class Tris1v1(Frame):
 
         self.resetButton=Button(self, text="Reset", command=self.reset)
         self.resetButton.grid(row=0, column=3)
-        
+
 
     def change1(self):
         if self.count%2==0:
@@ -47,7 +47,7 @@ class Tris1v1(Frame):
             self.winsO()
         self.count+=1
         self.b1["state"]=DISABLED
-        
+
     def change2(self):
         if self.count%2==0:
             self.b2["text"]=" X "
@@ -59,7 +59,7 @@ class Tris1v1(Frame):
             self.winsO()
         self.count+=1
         self.b2["state"]=DISABLED
-        
+
     def change3(self):
         if self.count%2==0:
             self.b3["text"]=" X "
@@ -71,7 +71,7 @@ class Tris1v1(Frame):
             self.winsO()
         self.count+=1
         self.b3["state"]=DISABLED
-        
+
     def change4(self):
         if self.count%2==0:
             self.b4["text"]=" X "
@@ -83,7 +83,7 @@ class Tris1v1(Frame):
             self.winsO()
         self.count+=1
         self.b4["state"]=DISABLED
-        
+
     def change5(self):
         if self.count%2==0:
             self.b5["text"]=" X "
@@ -95,7 +95,7 @@ class Tris1v1(Frame):
             self.winsO()
         self.count+=1
         self.b5["state"]=DISABLED
-        
+
     def change6(self):
         if self.count%2==0:
             self.b6["text"]=" X "
@@ -107,7 +107,7 @@ class Tris1v1(Frame):
             self.winsO()
         self.count+=1
         self.b6["state"]=DISABLED
-        
+
     def change7(self):
         if self.count%2==0:
             self.b7["text"]=" X "
@@ -119,7 +119,7 @@ class Tris1v1(Frame):
             self.winsO()
         self.count+=1
         self.b7["state"]=DISABLED
-        
+
     def change8(self):
         if self.count%2==0:
             self.b8["text"]=" X "
@@ -131,7 +131,7 @@ class Tris1v1(Frame):
             self.winsO()
         self.count+=1
         self.b8["state"]=DISABLED
-        
+
     def change9(self):
         if self.count%2==0:
             self.b9["text"]=" X "
@@ -143,7 +143,7 @@ class Tris1v1(Frame):
             self.winsO()
         self.count+=1
         self.b9["state"]=DISABLED
-        
+
 
     def winsX(self):
         if self.b1["text"]==" X " and self.b2["text"]==" X " and self.b3["text"]==" X ":
@@ -234,7 +234,7 @@ class Tris1v1(Frame):
             self.b7["state"]=DISABLED
             self.b8["state"]=DISABLED
             self.b9["state"]=DISABLED
-            
+
     def winsO(self):
         if self.b1["text"]==" O " and self.b2["text"]==" O " and self.b3["text"]==" O ":
             self.statusLabel["text"]="Vince O"
@@ -336,7 +336,7 @@ class Tris1v1(Frame):
         self.b7["text"]="    "
         self.b8["text"]="    "
         self.b9["text"]="    "
-        
+
         self.b1["state"]=NORMAL
         self.b2["state"]=NORMAL
         self.b3["state"]=NORMAL

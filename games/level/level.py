@@ -1,5 +1,5 @@
 import os
-os.chdir('C:/users/Paolo.Schiavoni/source/repos/py programs/giochi/level')
+os.chdir('C:/Users/Paolo.Schiavoni/source/repos/py programs/games/level')
 import pygame
 pygame.init()
 
@@ -74,7 +74,7 @@ block04=[420, 220, 445, 265]
 block05=[360, 170, 385, 225]
 #la 4 e la 5 sono diverse da quelle che sono disegnate perchè altrimenti col
 #salto si trova troppo in altro e al posto di modificare le coordinate (cosa
-#che potrebbe portare problemi come ha già fatto, cambio quelle dei blocchi 
+#che potrebbe portare problemi come ha già fatto, cambio quelle dei blocchi
 #che vengono disgnati, quindi non si vede nulla)
 blocklist=[block01, block02, block03, block04, block05]
 pltfrm_hitbox=[30, 250, 80, 238]
@@ -100,7 +100,7 @@ class Enemy(object):
         self.deathcount=0
         self.dead=False
         self.drawenemy=True
-    
+
     def draw(self, screen):
         if self.walkcount>35:
             self.walkcount=0
@@ -122,8 +122,8 @@ class Enemy(object):
             if self.x<2:
                 self.facing=1
         self.hitbox=[self.x, self.y, self.x+self.width, self.y+self.height]
-        
-            
+
+
 class player(object):
     def __init__(self, x, y, width, height):
         self.x=x
@@ -170,15 +170,15 @@ class player(object):
         self.vittoria_y=210
         self.vittoria_count=0
         self.vittoria_contatore=0
-        
+
     def draw(self, screen):
 
         if self.walkcountr>23:
             self.walkcountr=0
         if self.walkcountl>23:
             self.walkcountl=0
-        
-            
+
+
         if not(self.standing):
             if self.left:
                 screen.blit(walkleft[self.walkcountl//3], (self.x, self.y))
@@ -186,7 +186,7 @@ class player(object):
             elif self.right:
                 screen.blit(walkright[self.walkcountr//3], (self.x, self.y))
                 self.walkcountr+=1
-         
+
         if self.standing:
             if man.right:
                 if self.standcount>19:
@@ -198,11 +198,11 @@ class player(object):
                     self.standcount=0
                 screen.blit(standl[self.standcount//5], (self.x, self.y-10))
                 self.standcount+=1
-        
+
         self.hitbox=[self.x, self.y, self.x+self.width, self.y+self.height]
-        
+
     def atk(self, screen):
-        
+
         while self.atkcount<400:
             if self.right:
                 screen.blit(atkr[self.atkcount//100], (self.x, self.y-100))
@@ -215,7 +215,7 @@ class player(object):
                     screen.blit(atkl[self.atkcount//100], (self.x, self.y-100))
                 if self.atkcount%50==0:
                     self.x-=1
-                    
+
             if self.atkcount%100==0:
                 if enemy.drawenemy:
                     enemy.draw(screen)
@@ -225,86 +225,86 @@ class player(object):
             screen.blit(block, (480, 265))
             screen.blit(block, (420, 210))
             screen.blit(block, (360, 165))
-            
+
             for count in range(man.lives):
                 screen.blit(cuore, (630+(50*count), 30))
-            
+
             if not(enemy.drawenemy):
                 screen.blit(ground02, (80, 150))
                 screen.blit(pltfrm, (30, man.pltfrm_y))
                 screen.blit(forziere[man.forziere_count], (500, 113))
                 screen.blit(key01, (man.x-10, man.y-40))
-            
+
             pygame.display.update()
-            
+
             self.hitbox=[self.x, self.y, self.x+self.width, self.y+self.height]
-            
+
             self.atkcount+=1
         self.isatk=False
         self.atkcount=0
-        
+
     def isonblock_function(self):
         for box in blocklist:
             if self.hitbox[0]<box[2] and self.hitbox[2]>box[0]:
                 if abs(self.hitbox[3]-box[1])<7:
                     self.whichonblock=box
                     self.isonblock=True
-                    
+
     def isunderblock_function(self):
         for box in blocklist:
             if self.hitbox[0]<box[2] and self.hitbox[2]>box[0]:
                 if abs(self.hitbox[1]-box[3])<10:
                     self.isunderblock=True
                     self.whichunderblock=box
-                    
+
     def fall_function(self):
         if not(self.isjump) and self.y<350:
-        
+
             if self.x>=665:
                 if self.y<350:
                     man.fall=True
-                    
+
             if self.x>=590 and self.x<665:
                 if self.y<230:
                     man.fall=True
                 if self.hitbox[0]>block01[2] or self.hitbox[2]<block01[0]:
                     if self.y<350:
                         man.fall= True
-                        
+
             if self.x>=510 and self.x<590:
                 if self.y<230:
                     man.fall=True
                 if self.hitbox[0]+10>block02[2] or self.hitbox[2]<block02[0]:
                     if self.y<350:
                         man.fall= True
-                        
+
             if self.x>=450 and self.x<510:
                 if self.y<185:
                     man.fall=True
                 if self.hitbox[0]>block03[2] or self.hitbox[2]<block03[0]:
                     if self.y<214:
                         man.fall= True
-                        
+
             if self.x>=390 and self.x<450:
                 if self.y<135:
                     man.fall=True
                 if self.hitbox[0]>block04[2] or self.hitbox[2]<block04[0]:
                     if self.y<156:
                         man.fall= True
-                        
+
             if self.x>=330 and self.x<390:
                 if self.hitbox[0]>block05[2] or self.hitbox[2]<block05[0]:
                     if self.y<80:
                         man.fall= True
-                        
+
             if self.x>=270 and self.x<330:
                 if self.y<350:
                     man.fall=True
-            
+
             if self.x<270:
                 if self.y<170:
                     man.fall=True
-                        
+
     def fall_function_corta(self):
         self.fall_function()
         if not(self.fall):
@@ -313,7 +313,7 @@ class player(object):
             self.y+=self.fallcount
             self.fallcount+=3
             self.fall=False
-    
+
     def gethit(self):
         if not (self.isatk):
             if self.hitbox[0]<enemy.hitbox[2] and self.hitbox[2]-10>enemy.hitbox[0]:
@@ -326,18 +326,18 @@ class player(object):
         if self.isatk:
             if self.hitbox[0]-40<enemy.hitbox[2] and self.hitbox[2]>enemy.hitbox[0]:
                 enemy.dead=True
-    
+
     def elevator_function(self):
         if self.y<350 and self.jumpcount==8:
-            if self.hitbox[0]+15>pltfrm_hitbox[0] and self.hitbox[2]+5<pltfrm_hitbox[2]:           
+            if self.hitbox[0]+15>pltfrm_hitbox[0] and self.hitbox[2]+5<pltfrm_hitbox[2]:
                 if self.pltfrm_y>145:
                     self.canmove=False
                     self.pltfrm_y-=3
                     man.standing=True
-                    man.walkcount=0 
+                    man.walkcount=0
                 else:
                     self.canmove=True
-    
+
     def forziere_function(self):
         man.canmove=False
         self.forziere_wait+=1
@@ -349,7 +349,7 @@ class player(object):
         if self.forziere_count==5:
             self.vittoria=True
             self.canmove=False
-    
+
     def sconfitta_function(self):
         self.sconfitta=True
         self.canmove=False
@@ -358,21 +358,21 @@ class player(object):
             self.sconfitta_contatore+=1
             if self.sconfitta_contatore%10==0:
                 self.sconfitta_count+=1
-            
-        
-                    
+
+
+
 enemy=Enemy(1, 168, 74, 85)
 man=player(50, 350, 33, 64)#50, 350
 
 def disegna():
     screen.blit(bg, (0, 0))
     screen.blit(ground01, (-1, 414))
-    
+
     if not(man.isatk):
         man.draw(screen)
     if man.isatk:
         man.atk(screen)
-        
+
     if not(enemy.dead) and enemy.drawenemy:
         enemy.draw(screen)
     if enemy.dead and enemy.drawenemy:
@@ -384,18 +384,18 @@ def disegna():
             enemy.deathcount+=1
         if enemy.deathcount==20:
             enemy.drawenemy=False
- 
+
     screen.blit(ground03, (0, 250))
-    
+
     screen.blit(block, (640, 310))
     screen.blit(block, (540, 310))
     screen.blit(block, (480, 265))
     screen.blit(block, (420, 210))
     screen.blit(block, (360, 165))
-    
+
     for count in range(man.lives):
         screen.blit(cuore, (630+(50*count), 30))
-    
+
     if contatore<=7:
         screen.blit(key01, (enemy.x-10, enemy.y-40))
     if contatore>7 and contatore<=14:
@@ -406,9 +406,9 @@ def disegna():
         screen.blit(key04, (enemy.x+8, enemy.y-25))
     if contatore>28 and contatore<=35:
         screen.blit(key05, (enemy.x+14, enemy.y-18))
-    
+
     if not(enemy.drawenemy):
-        
+
         if man.contatore_chiave<=7:
             screen.blit(key05, (man.x+14, man.y-18))
         if man.contatore_chiave>7 and man.contatore_chiave<=14:
@@ -421,13 +421,13 @@ def disegna():
             screen.blit(ground02, (80, 150))
             screen.blit(pltfrm, (30, man.pltfrm_y))
             screen.blit(forziere[man.forziere_count], (500, 113))
-            
+
             if not(man.movekey):
                 screen.blit(key01, (man.x-10, man.y-40))
             if man.movekey:
                 screen.blit(key01, (man.key_x, man.y-40))
         man.contatore_chiave+=1
-    
+
     if man.sconfitta:
         screen.blit(sconfitta[man.sconfitta_count], (man.sconfitta_x, man.sconfitta_y))
         man.sconfitta_contatore+=1
@@ -435,7 +435,7 @@ def disegna():
             if man.sconfitta_count<6:
                 man.sconfitta_x-=25
                 man.sconfitta_count+=1
-    
+
     if man.vittoria:
         screen.blit(vittoria[man.vittoria_count], (man.vittoria_x, man.vittoria_y))
         man.vittoria_contatore+=1
@@ -443,7 +443,7 @@ def disegna():
             if man.vittoria_count<6:
                 man.vittoria_x-=25
                 man.vittoria_count+=1
-    
+
     pygame.display.update()
 
 
@@ -451,13 +451,13 @@ while True:
     clock.tick(30)
 
     keys=pygame.key.get_pressed()
-    
+
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             break
-    
+
     #per ogni comando sulle x, comparo l'hitbox con quelle del blocco e la stessa cosa per le y
-    
+
     if keys[pygame.K_LEFT] and man.canmove:
         man.fall_function_corta()
         for box in blocklist:
@@ -469,10 +469,10 @@ while True:
             man.right=False
             man.x-=man.vel
             man.standing=False
-        
+
         man.moveleft=1
-            
-    
+
+
     if keys[pygame.K_RIGHT] and man.canmove:
         man.fall_function_corta()
         for box in blocklist:
@@ -485,29 +485,29 @@ while True:
             man.standing=False
             man.x+=man.vel
         man.moveright=1
-    
+
     if keys[pygame.K_UP] and man.canmove:
         if man.waitjump>15:
             man.isjump=True
             man.waitjump=0
-        
+
     if man.isjump:
-        
+
         #parte da terra e sale sul primo blocco eventualmente
-        
+
         if man.jumpcount>=-8:
-            
+
             man.y-=(man.jumpcount*abs(man.jumpcount)) / 2
             man.jumpcount-=1
             man.isonblock_function()
             man.isunderblock_function()
-             
+
             if man.isonblock:
                 man.y=man.whichonblock[1]-man.height-20
                 man.isjump=False
                 man.jumpcount=8
                 man.isonblock=False
-                
+
             if man.isunderblock:
                 man.y=350
                 man.isjump=False
@@ -516,35 +516,35 @@ while True:
         else:
             man.isjump=False
             man.jumpcount=8
-        
+
     if keys[pygame.K_SPACE] and man.canmove:
         if man.waitatk>25:
             man.isatk=True
             man.waitatk=0
-        
+
     if not(keys[pygame.K_RIGHT]) and not(keys[pygame.K_LEFT]) and not(keys[pygame.K_UP]):
         man.fall_function_corta()
         man.standing=True
         man.walkcount=0
-    
+
     man.waitatk+=1
     man.waitjump+=1
-    
+
     if man.y>340:
         man.y=350
-    
+
     if man.x<300 and man.y<350 and man.jumpcount==8:
         if not(enemy.dead):
             man.gethit()
-    
+
     contatore+=1
-    
+
     if enemy.dead:
         man.elevator_function()
         man.y=man.pltfrm_y-65
         if man.hitbox[2]>465:
             man.forziere_function()
-    
+
     disegna()
 
 pygame.quit()
