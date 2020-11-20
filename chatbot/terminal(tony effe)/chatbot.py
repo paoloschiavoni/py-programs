@@ -14,7 +14,7 @@ if not 'memoria.txt' in os.listdir():
 #creato il file se non c'era
 
 else:
-    file=open("C:\\Users\\Diego\\Desktop\\py programs\\chatbot\\memoria.txt", 'r')
+    file=open("C:/Users/Paolo.Schiavoni/source/repos/py programs/chatbot/terminal(tony effe)/memoria.txt", 'r')
 #aperto il file se c'era già
 
 
@@ -37,11 +37,11 @@ def main():
         if el not in lista_caratteri_spec:
             lista_caratteri_domanda.append(el)
     d=''.join(lista_caratteri_domanda)
-    
+
     if d in dizio:
         print(dizio[d], '\n')
         main()
-        
+
     print('non so cosa rispondere, dimmelo tu:')
     new_risp=str(input('>>> '))
     print('gialossssai\n')
