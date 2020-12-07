@@ -32,6 +32,8 @@ for el in driver.find_elements_by_class_name('a-price-whole'):
         if el>1:
             lista.append(el)
 lista.sort()
+lista.pop(0)
+lista.pop(-1)
 
 
 max=0
