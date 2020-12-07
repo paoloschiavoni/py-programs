@@ -8,16 +8,15 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
 
 PATH='C:\Program Files (x86)\chromedriver.exe'
 driver=webdriver.Chrome(PATH)
 
 driver.get('https://www.amazon.it/')
-
-driver.implicitly_wait(3)
-
 searchbox=driver.find_element_by_xpath('//*[@id="twotabsearchtextbox"]')
 
+time.sleep(5)
 nomeprodotto=str(input('nome del prodotto: '))
 
 searchbox.send_keys(nomeprodotto)
@@ -67,6 +66,8 @@ for i in lista:
         frequenza=frequenzatmp
 
 
-print('\nnumero di prodotti:', len(lista), '\npiù costoso:', \
-max, '\npiù economico:', min, '\nmedia dei prezzi:', media, \
-'\nmediana dei prezzi:', mediana, '\nmoda', moda, '('+str(frequenza)+')')
+print('\nnumero di prodotti:', len(lista), '\npiù costoso:€'+str(max)\
+, '\npiù economico: €'+str(min), '\nmedia dei prezzi: €'+str(media), \
+'\nmediana dei prezzi: €'+str(mediana))
+if frequenza>1:
+    print('moda: €'+str(moda), '('+str(frequenza)+' prodotti)')
