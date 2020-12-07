@@ -19,7 +19,7 @@ driver=webdriver.Chrome(PATH)
 while 1:
     driver.get('https://www.amazon.it/')
     searchbox=driver.find_element_by_xpath('//*[@id="twotabsearchtextbox"]')
-    driver.implicitly_wait(3)
+    time.sleep(3)
     nomeprodotto=str(input('\nnome del prodotto: '))
 
     searchbox.send_keys(nomeprodotto)
