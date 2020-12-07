@@ -17,7 +17,7 @@ driver.get('https://www.amazon.it/')
 searchbox=driver.find_element_by_xpath('//*[@id="twotabsearchtextbox"]')
 
 time.sleep(5)
-nomeprodotto=str(input('nome del prodotto: '))
+nomeprodotto=str(input('\nnome del prodotto: '))
 
 searchbox.send_keys(nomeprodotto)
 searchbox.send_keys(Keys.ENTER)
