@@ -1,6 +1,8 @@
 '''
+
 un programma che analizza i prezzi di un determinato prodotto su amazon
 Schiavoni Paolo, 07/12/2020
+
 '''
 
 from selenium import webdriver
