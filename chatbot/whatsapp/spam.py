@@ -15,6 +15,6 @@ search_box.send_keys(Keys.ENTER)
 
 for i in range(10000):
     msg_box=driver.find_element_by_xpath("//*[@id='main']/footer/div[1]/div[2]/div/div[2]")
-    msg_box.send_keys('f')
+    msg_box.send_keys('bertini muori')
     msg_box.send_keys(Keys.ENTER)
 driver.quit()
