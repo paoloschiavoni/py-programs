@@ -554,5 +554,9 @@ modulo: y= amdl( bx +c) +d\n\n')
             self.int_y=find_fraction(self.int_y)
             self.t.write('(0.0, '+str(self.int_y)+')', font=('Calibri', 17))
 
-Grafico()
+try:
+    Grafico()
+except:
+    print('\nerrore')
+    Grafico()
 fine=input('>>> ')

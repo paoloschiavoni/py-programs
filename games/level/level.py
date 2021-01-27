@@ -1,3 +1,5 @@
+#all'avvio del programma fare invio altrimenti resta fermo
+
 import os
 os.chdir('C:/Users/Paolo.Schiavoni/source/repos/py programs/games/level')
 import pygame
