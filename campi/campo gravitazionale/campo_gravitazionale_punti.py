@@ -109,13 +109,13 @@ class Campo_gravitazionale(Turtle):
             self.t.goto(corpo[0], corpo[1])
             self.t.dot(corpo[2], "black")
             self.t.goto(corpo[0]+20, corpo[1]+20)
-            self.t.write("m"+str(count)+" ( "+str(corpo[0]/self.moltiplicatore_coord)+", "+str(corpo[1]/self.moltiplicatore_coord)+" )")
+            self.t.write("m"+str(count)+" ( "+str(corpo[0]/(self.moltiplicatore_coord+0.0000000000000001))+", "+str(corpo[1]/(self.moltiplicatore_coord+0.0000000000000001))+" )")
             count+=1
 
         self.calcola_ogni_punto()
 
     def calcola_ogni_punto(self):
-        self.separatore=18
+        self.separatore=200#14
         self.casi_totali=self.lunghezza*self.altezza/(self.separatore**2)
         print(self.casi_totali)
         for i in range(round(-self.lunghezza/2), round(self.lunghezza/2), self.separatore):
@@ -127,9 +127,9 @@ class Campo_gravitazionale(Turtle):
     def calcola_campi(self):
         self.lista_campi=[]
         for corpo in self.lista_corpi:
-            d_quadro=((corpo[0]/(self.moltiplicatore_coord+0.000000001))-(self.coordinate_punto[0]/(self.moltiplicatore_coord+0.000000001)))**2+\
-            ((corpo[1]/(self.moltiplicatore_coord+0.000000000000001))-(self.coordinate_punto[1]/(self.moltiplicatore_coord+0.00000000001)))**2
-            g=dec((6.67*10**-11)*(corpo[2]/self.moltiplicatore_massa)/d_quadro)
+            d_quadro=((corpo[0]/(self.moltiplicatore_coord))-(self.coordinate_punto[0]/(self.moltiplicatore_coord)))**2+\
+            ((corpo[1]/(self.moltiplicatore_coord+0.0000000000000001))-(self.coordinate_punto[1]/(self.moltiplicatore_coord+0.0000000000000001)))**2
+            g=dec((6.67*10**-11)*(corpo[2]/(self.moltiplicatore_massa+0.0000000000000001))/(d_quadro+0.0000000000000001))
             self.lista_campi.append(g)
 
 
@@ -140,7 +140,7 @@ class Campo_gravitazionale(Turtle):
         self.lista_angoli=[]
 
         for corpo in self.lista_corpi:
-            angolo= dec(arctan((corpo[1]-(self.coordinate_punto[1]+0.000000001))/(corpo[0]-(self.coordinate_punto[1]+0.000000001))))#in radianti
+            angolo= dec(arctan((corpo[1]-(self.coordinate_punto[1]))/((corpo[0]-(self.coordinate_punto[0])+0.0000000000000001))))#in radianti
             self.lista_angoli.append(abs(angolo))
 
         self.calcola_componenti_campi()
@@ -189,15 +189,12 @@ class Campo_gravitazionale(Turtle):
         self.salva_risultato()
 
     def salva_risultato(self):
-        self.risultati_finali.append([self.campo_tot, self.angolo_finale, \
-        self.componente_campo_x, self.componente_campo_y, self.coordinate_punto])
+        self.risultati_finali.append([self.campo_tot, self.coordinate_punto])
+
 
         '''
         campo_tot           0
-        angolo_finale       1
-        componente_campo_x  2
-        componente_campo_y  3
-        coordinate_punto    4
+        coordinate_punto    1
         '''
 
         if len(self.risultati_finali)>self.casi_totali:
@@ -216,78 +213,34 @@ class Campo_gravitazionale(Turtle):
 
         for risultati in self.risultati_finali:
             color=self.scegli_colore(risultati)
-            self.t.pencolor(color)
+            self.t.goto(risultati[1][0], risultati[1][1])
+            self.t.dot(20, color)
 
-            self.t.goto(risultati[4][0], risultati[4][1])
-            if risultati[2]>0 and risultati[3]>0:
-                self.t.seth(float(risultati[1]))
-                self.t.down()
-                self.t.forward(16)
-                self.t.seth(float(risultati[1])+float(135))
-                self.t.forward(4)
-                self.t.seth(float(risultati[1])-float(45))
-                self.t.forward(4)
-                self.t.seth(float(risultati[1])+float(225))
-                self.t.forward(4)
-                self.t.up()
-            if risultati[2]<0 and risultati[3]>0:
-                self.t.seth(float(180)+float(risultati[1]))
-                self.t.down()
-                self.t.forward(16)
-                self.t.seth(float(risultati[1])+float(315))
-                self.t.forward(4)
-                self.t.seth(float(risultati[1])+float(135))
-                self.t.forward(4)
-                self.t.seth(float(risultati[1])+float(45))
-                self.t.forward(4)
-                self.t.up()
-            if risultati[2]<0 and risultati[3]<0:
-                self.t.seth(float(180)+float(risultati[1]))
-                self.t.down()
-                self.t.forward(16)
-                self.t.seth(float(risultati[1])+float(315))
-                self.t.forward(4)
-                self.t.seth(float(risultati[1])+float(135))
-                self.t.forward(4)
-                self.t.seth(float(risultati[1])+float(45))
-                self.t.forward(4)
-                self.t.up()
-            if risultati[2]>0 and risultati[3]<0:
-                self.t.seth(float(risultati[1]))
-                self.t.down()
-                self.t.forward(16)
-                self.t.seth(float(risultati[1])-float(135))
-                self.t.forward(4)
-                self.t.seth(float(risultati[1])+float(45))
-                self.t.forward(4)
-                self.t.seth(float(risultati[1])-float(225))
-                self.t.forward(4)
-                self.t.up()
+        print(self.risultati_finali)
 
     def scegli_colore(self, risultati):
         differenza=dec(self.campo_max-self.campo_min)
-        step=dec(differenza/42327)#somma di quelli sotto
+        step=dec(differenza/409112)#somma di quelli sotto
         if risultati[0]<(self.campo_min+step):
-            return "light coral"#(100, 100, 255)
+            return "dark violet"#(100, 100, 255)
         if risultati[0]>(self.campo_min+step) and risultati[0]<(self.campo_min+step*dec(2)):
-            return "hot pink"#(50, 50, 255)
-        if risultati[0]>(self.campo_min+step*dec(2)) and risultati[0]<(self.campo_min+step*dec(8)):
-            return "violet"#(50, 50, 255)
-        if risultati[0]>(self.campo_min+step*dec(8)) and risultati[0]<(self.campo_min+step*dec(32)):
-            return "orchid"#(50, 50, 255)
-        if risultati[0]>(self.campo_min+step*dec(32)) and risultati[0]<(self.campo_min+step*dec(124)):
-            return "hot pink"#(0, 0, 255)
-        if risultati[0]>(self.campo_min+step*dec(124)) and risultati[0]<(self.campo_min+step*dec(496)):
-            return "tomato"#(0, 0, 255)
-        if risultati[0]>(self.campo_min+step*dec(496)) and risultati[0]<(self.campo_min+step*dec(1984)):
-            return "orange red"#(100, 0, 255)
-        if risultati[0]>(self.campo_min+step*dec(1984)) and risultati[0]<(self.campo_min+step*dec(7936)):
-            return "red"#(200, 0, 255)
-        if risultati[0]>(self.campo_min+step*dec(7936)) and risultati[0]<(self.campo_min+step*dec(31744)):
-            return "crimson"#(255, 0, 255)
-        if risultati[0]>(self.campo_min+step*dec(31744)):
-            return "dark red"#(255, 0, 150)
-
+            return "blue"#(50, 50, 255)
+        if risultati[0]>(self.campo_min+step*dec(2)) and risultati[0]<(self.campo_min+step*dec(6)):
+            return "dodger blue"#(50, 50, 255)
+        if risultati[0]>(self.campo_min+step*dec(6)) and risultati[0]<(self.campo_min+step*dec(24)):
+            return "aqua"#(50, 50, 255)
+        if risultati[0]>(self.campo_min+step*dec(24)) and risultati[0]<(self.campo_min+step*dec(120)):
+            return "lime"#(0, 0, 255)
+        if risultati[0]>(self.campo_min+step*dec(120)) and risultati[0]<(self.campo_min+step*dec(720)):
+            return "green yellow"#(0, 0, 255)
+        if risultati[0]>(self.campo_min+step*dec(720)) and risultati[0]<(self.campo_min+step*dec(5040)):
+            return "yellow"#(100, 0, 255)
+        if risultati[0]>(self.campo_min+step*dec(5040)) and risultati[0]<(self.campo_min+step*dec(40320)):
+            return "gold"#(200, 0, 255)
+        if risultati[0]>(self.campo_min+step*dec(40320)) and risultati[0]<(self.campo_min+step*dec(362880)):
+            return "orange red"#(255, 0, 255)
+        if risultati[0]>(self.campo_min+step*dec(362880)):
+            return "red"#(255, 0, 150)
 
 
 
