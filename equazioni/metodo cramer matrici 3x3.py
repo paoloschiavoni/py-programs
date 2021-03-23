@@ -49,10 +49,10 @@ class Sistema(Frame):
         self.trova_matrici()
 
     def trova_matrici(self):
-        
+
         self.matrice_label=Label(self, text="Matrice")
         self.matrice_label.grid(row=4, column=0, rowspan=2)
-        
+
         for equazione in self.lista_equazioni:#considero un'equazione alla volta
             self.lista_elementi=equazione.split(" ")#creo una lista con i membri dell'equazione
 
@@ -82,7 +82,7 @@ class Sistema(Frame):
 
                         self.lista_el_c.remove("z")
 
-                    
+
                     if "=" in membro:
                         for el in membro:
                             self.lista_termini_noti.append(el)
@@ -93,7 +93,7 @@ class Sistema(Frame):
                     self.coeff_b1="".join(self.lista_el_b)
                     self.coeff_c1="".join(self.lista_el_c)
                     self.term_noto1="".join(self.lista_termini_noti)
-                    
+
 
                     self.matrice_label1=Label(self, text=self.coeff_a1+" "+self.coeff_b1+" "+self.coeff_c1+"    "+self.term_noto1)
                     self.matrice_label1.grid(row=3, column=1)
@@ -123,7 +123,7 @@ class Sistema(Frame):
                             self.lista_el_c.append(el)
 
                         self.lista_el_c.remove("z")
-                    
+
                     if "=" in membro:
                         for el in membro:
                             self.lista_termini_noti.append(el)
@@ -163,7 +163,7 @@ class Sistema(Frame):
                             self.lista_el_c.append(el)
 
                         self.lista_el_c.remove("z")
-                    
+
                     if "=" in membro:
                         for el in membro:
                             self.lista_termini_noti.append(el)
@@ -229,7 +229,7 @@ class Sistema(Frame):
                            (self.term_noto1*self.coeff_c2*self.coeff_b3)-\
                            (self.coeff_b1*self.term_noto2*self.coeff_c3)-\
                            (self.coeff_c1*self.coeff_b2*self.term_noto3)
-        
+
         self.determinante_x_label=Label(self, text="determinante x: "+str(self.determinante_x))
         self.determinante_x_label.grid(row=8,column=1)
 
@@ -241,7 +241,7 @@ class Sistema(Frame):
                            (self.coeff_a1*self.coeff_c2*self.term_noto3)-\
                            (self.term_noto1*self.coeff_a2*self.coeff_c3)-\
                            (self.coeff_c1*self.term_noto2*self.coeff_a3)
-        
+
         self.determinante_y_label=Label(self, text="determinante x: "+str(self.determinante_y))
         self.determinante_y_label.grid(row=8,column=2)
 

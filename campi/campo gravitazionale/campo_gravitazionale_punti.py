@@ -1,4 +1,4 @@
-from turtle import Turtle
+from turtle import Turtle, Screen
 from numpy import *
 import math
 from decimal import Decimal as dec
@@ -19,6 +19,8 @@ class Campo_gravitazionale(Turtle):
         self.coordinate_punto=[]
         self.altezza=900
         self.lunghezza=1650
+        self.risultati_finali=[]
+        self.counter=0
         while True:
             try:
                 x=int(input("ascissa corpo "+str(len(self.lista_corpi)+1)+": "))
@@ -30,10 +32,6 @@ class Campo_gravitazionale(Turtle):
             except:
                 break
 
-        xp=int(input("\nascissa punto: "))
-        yp=int(input("ordinata punto: "))
-        self.coordinate_punto.append(xp)
-        self.coordinate_punto.append(yp)
         self.analizza_corpi()
 
     def analizza_corpi(self):
@@ -45,11 +43,6 @@ class Campo_gravitazionale(Turtle):
             for corpo in self.lista_corpi:
                 if abs(corpo[i])>abs(self.massimi[i]):
                     self.massimi[i]=abs(corpo[i])
-
-        if self.coordinate_punto[0]>self.massimi[0]:
-            self.massimi[0]=self.coordinate_punto[0]
-        if self.coordinate_punto[1]>self.massimi[1]:
-            self.massimi[1]=self.coordinate_punto[1]
 
         self.change_coordinates_foraxes()
 
@@ -68,9 +61,6 @@ class Campo_gravitazionale(Turtle):
 
         for corpo in self.lista_corpi:
             corpo[2]*=self.moltiplicatore_massa
-
-        self.coordinate_punto[0]*=self.moltiplicatore_coord
-        self.coordinate_punto[1]*=self.moltiplicatore_coord
 
         self.disegna_assi()
 
@@ -119,23 +109,27 @@ class Campo_gravitazionale(Turtle):
             self.t.goto(corpo[0], corpo[1])
             self.t.dot(corpo[2], "black")
             self.t.goto(corpo[0]+20, corpo[1]+20)
-            self.t.write("m"+str(count)+" ( "+str(corpo[0]/self.moltiplicatore_coord)+", "+str(corpo[1]/self.moltiplicatore_coord)+" )")
+            self.t.write("m"+str(count)+" ( "+str(corpo[0]/(self.moltiplicatore_coord+0.0000000000000001))+", "+str(corpo[1]/(self.moltiplicatore_coord+0.0000000000000001))+" )")
             count+=1
 
-        self.t.up()
-        self.t.goto(self.coordinate_punto[0], self.coordinate_punto[1])
-        self.t.dot(10, "blue")
-        self.t.goto(self.coordinate_punto[0]+20, self.coordinate_punto[1]+20)
-        self.t.write("P ( "+str(self.coordinate_punto[0]/self.moltiplicatore_coord)+", "+str(self.coordinate_punto[1]/self.moltiplicatore_coord)+" )")
+        self.calcola_ogni_punto()
 
-        self.calcola_campi()
+    def calcola_ogni_punto(self):
+        self.separatore=200#14
+        self.casi_totali=self.lunghezza*self.altezza/(self.separatore**2)
+        print(self.casi_totali)
+        for i in range(round(-self.lunghezza/2), round(self.lunghezza/2), self.separatore):
+            for j in range(round(-self.altezza/2), round(self.altezza/2), self.separatore):
+                self.coordinate_punto=[i, j]
+                self.calcola_campi()
+
 
     def calcola_campi(self):
         self.lista_campi=[]
         for corpo in self.lista_corpi:
-            d_quadro=((corpo[0]/self.moltiplicatore_coord)-(self.coordinate_punto[0]/self.moltiplicatore_coord))**2+\
-            ((corpo[1]/self.moltiplicatore_coord)-(self.coordinate_punto[1]/self.moltiplicatore_coord))**2
-            g=dec((6.67*10**-11)*(corpo[2]/self.moltiplicatore_massa)/d_quadro)
+            d_quadro=((corpo[0]/(self.moltiplicatore_coord))-(self.coordinate_punto[0]/(self.moltiplicatore_coord)))**2+\
+            ((corpo[1]/(self.moltiplicatore_coord+0.0000000000000001))-(self.coordinate_punto[1]/(self.moltiplicatore_coord+0.0000000000000001)))**2
+            g=dec((6.67*10**-11)*(corpo[2]/(self.moltiplicatore_massa+0.0000000000000001))/(d_quadro+0.0000000000000001))
             self.lista_campi.append(g)
 
 
@@ -146,7 +140,7 @@ class Campo_gravitazionale(Turtle):
         self.lista_angoli=[]
 
         for corpo in self.lista_corpi:
-            angolo= dec(arctan((corpo[1]-self.coordinate_punto[1])/(corpo[0]-self.coordinate_punto[0])))#in radianti
+            angolo= dec(arctan((corpo[1]-(self.coordinate_punto[1]))/((corpo[0]-(self.coordinate_punto[0])+0.0000000000000001))))#in radianti
             self.lista_angoli.append(abs(angolo))
 
         self.calcola_componenti_campi()
@@ -192,60 +186,63 @@ class Campo_gravitazionale(Turtle):
     def calcola_angolo_finale(self):
         self.angolo_finale=dec(arctan(float(self.componente_campo_y/self.componente_campo_x)))
         self.angolo_finale=self.angolo_finale*dec(180/math.pi)
+        self.salva_risultato()
 
-        self.disegna_vettore()
+    def salva_risultato(self):
+        self.risultati_finali.append([self.campo_tot, self.coordinate_punto])
 
-    def disegna_vettore(self):
-        self.t.goto(self.coordinate_punto[0], self.coordinate_punto[1])
-        if self.componente_campo_x>0 and self.componente_campo_y>0:
-            self.t.seth(float(self.angolo_finale))
-            self.t.down()
-            self.t.forward(60)
-            self.t.seth(float(self.angolo_finale)+float(135))
-            self.t.forward(10)
-            self.t.seth(float(self.angolo_finale)-float(45))
-            self.t.forward(10)
-            self.t.seth(float(self.angolo_finale)+float(225))
-            self.t.forward(10)
-            self.t.up()
-        if self.componente_campo_x<0 and self.componente_campo_y>0:
-            self.t.seth(float(180)+float(self.angolo_finale))
-            self.t.down()
-            self.t.forward(60)
-            self.t.seth(float(self.angolo_finale)+float(315))
-            self.t.forward(10)
-            self.t.seth(float(self.angolo_finale)+float(135))
-            self.t.forward(10)
-            self.t.seth(float(self.angolo_finale)+float(45))
-            self.t.forward(10)
-            self.t.up()
-        if self.componente_campo_x<0 and self.componente_campo_y<0:
-            self.t.seth(float(180)+float(self.angolo_finale))
-            self.t.down()
-            self.t.forward(60)
-            self.t.seth(float(self.angolo_finale)+float(315))
-            self.t.forward(10)
-            self.t.seth(float(self.angolo_finale)+float(135))
-            self.t.forward(10)
-            self.t.seth(float(self.angolo_finale)+float(45))
-            self.t.forward(10)
-            self.t.up()
-        if self.componente_campo_x>0 and self.componente_campo_y<0:
-            self.t.seth(float(self.angolo_finale))
-            self.t.down()
-            self.t.forward(60)
-            self.t.seth(float(self.angolo_finale)-float(135))
-            self.t.forward(10)
-            self.t.seth(float(self.angolo_finale)+float(45))
-            self.t.forward(10)
-            self.t.seth(float(self.angolo_finale)-float(225))
-            self.t.forward(10)
-            self.t.up()
 
-        print("\ncomponente x:", self.componente_campo_x)
-        print("componente y:", self.componente_campo_y)
-        print("angolo:", self.angolo_finale)
-        print("modulo campo finale:", self.campo_tot)
+        '''
+        campo_tot           0
+        coordinate_punto    1
+        '''
+
+        if len(self.risultati_finali)>self.casi_totali:
+            self.campo_max=0
+            self.campo_min=1e10000
+            for i in self.risultati_finali:
+                if i[0]>self.campo_max:
+                    self.campo_max=i[0]
+                if i[0]<self.campo_min:
+                    self.campo_min=i[0]
+            self.disegna_vettori()
+        else:
+            print(len(self.risultati_finali), self.casi_totali)
+
+    def disegna_vettori(self):
+
+        for risultati in self.risultati_finali:
+            color=self.scegli_colore(risultati)
+            self.t.goto(risultati[1][0], risultati[1][1])
+            self.t.dot(20, color)
+
+        print(self.risultati_finali)
+
+    def scegli_colore(self, risultati):
+        differenza=dec(self.campo_max-self.campo_min)
+        step=dec(differenza/409112)#somma di quelli sotto
+        if risultati[0]<(self.campo_min+step):
+            return "dark violet"#(100, 100, 255)
+        if risultati[0]>(self.campo_min+step) and risultati[0]<(self.campo_min+step*dec(2)):
+            return "blue"#(50, 50, 255)
+        if risultati[0]>(self.campo_min+step*dec(2)) and risultati[0]<(self.campo_min+step*dec(6)):
+            return "dodger blue"#(50, 50, 255)
+        if risultati[0]>(self.campo_min+step*dec(6)) and risultati[0]<(self.campo_min+step*dec(24)):
+            return "aqua"#(50, 50, 255)
+        if risultati[0]>(self.campo_min+step*dec(24)) and risultati[0]<(self.campo_min+step*dec(120)):
+            return "lime"#(0, 0, 255)
+        if risultati[0]>(self.campo_min+step*dec(120)) and risultati[0]<(self.campo_min+step*dec(720)):
+            return "green yellow"#(0, 0, 255)
+        if risultati[0]>(self.campo_min+step*dec(720)) and risultati[0]<(self.campo_min+step*dec(5040)):
+            return "yellow"#(100, 0, 255)
+        if risultati[0]>(self.campo_min+step*dec(5040)) and risultati[0]<(self.campo_min+step*dec(40320)):
+            return "gold"#(200, 0, 255)
+        if risultati[0]>(self.campo_min+step*dec(40320)) and risultati[0]<(self.campo_min+step*dec(362880)):
+            return "orange red"#(255, 0, 255)
+        if risultati[0]>(self.campo_min+step*dec(362880)):
+            return "red"#(255, 0, 150)
+
+
 
 Campo_gravitazionale()
 fine=input('>>> ')
