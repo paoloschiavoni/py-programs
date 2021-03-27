@@ -27,37 +27,26 @@ class Traiettoria(Turtle):
         self.lunghezza=550
         self.altezza_foraxes=900#quelle per disegnare gli assi
         self.lunghezza_foraxes=1650
+        while True:
+            try:
+                x=int(input("ascissa corpo "+str(len(self.lista_corpi)+1)+": "))
+                y=int(input("ordinata corpo "+str(len(self.lista_corpi)+1)+": "))
+                massa=int(input("massa corpo "+str(len(self.lista_corpi)+1)+": "))
+                print("\n")
+                self.lista_corpi.append([x, y, massa])
+            except:
+                break
 
-        dati=open("dati.txt")
-        dati=dati.read()
-
-        dati=dati.split("\n")
-
-        vyp=int(dati[-2])
-        vxp=int(dati[-3])
-        yp=int(dati[-4])
-        xp=int(dati[-5])
+        xp=int(input("\nascissa punto: "))
+        yp=int(input("ordinata punto: "))
+        vxp=int(input("velocità componente x: "))
+        vyp=int(input("velocità componente y: "))
 
         self.info_punto.append(xp)
         self.info_punto.append(yp)
         self.info_punto.append(vxp)
         self.info_punto.append(vyp)
 
-        for count in range(6):
-            dati.pop(-1)
-
-        x=0
-        y=0
-        massa=0
-
-        for dato in dati:
-            if dati.index(dato) %3==0:
-                x=int(dato)
-            if dati.index(dato) %3==1:
-                y=int(dato)
-            if dati.index(dato) %3==2:
-                massa=int(dato)
-                self.lista_corpi.append([x, y, massa])
 
     def analizza_corpi(self):
         max_x=0
@@ -78,7 +67,7 @@ class Traiettoria(Turtle):
     def change_coordinates_foraxes(self):
         x_max=(self.lunghezza/2)/(self.massimi[0]+0.0000000000000001)
         y_max=(self.altezza/2)/(self.massimi[1]+0.0000000000000001)
-        self.moltiplicatore_massa=20/(self.massimi[2]+0.0000000000000001)
+        self.moltiplicatore_massa=40/(self.massimi[2]+0.0000000000000001)
 
         if x_max>=y_max:
             self.moltiplicatore_coord=y_max
@@ -148,7 +137,7 @@ class Traiettoria(Turtle):
             self.t.up()
             self.t.goto(round(self.info_punto[0]), round(self.info_punto[1]))
             self.t.down()
-            self.t.speed(2)
+            self.t.speed(4)
             count+=1
 
 
@@ -159,8 +148,8 @@ class Traiettoria(Turtle):
 
     def continua_traiettoria(self):
         for corpo in self.lista_corpi:
-            if self.info_punto[0]<(corpo[0]+5) and self.info_punto[0]>(corpo[0]-5):
-                if self.info_punto[1]<(corpo[1]+5) and self.info_punto[1]>(corpo[0]-5):
+            if self.info_punto[0]<(corpo[0]+30) and self.info_punto[0]>(corpo[0]-30):
+                if self.info_punto[1]<(corpo[1]+30) and self.info_punto[1]>(corpo[0]-30):
                     self.t.up()
                     while 1:
                         self.t.forward(1)
@@ -189,7 +178,7 @@ class Traiettoria(Turtle):
         for corpo in self.lista_corpi:
             d_quadro=((corpo[0]/(self.moltiplicatore_coord+0.0000000000000001))-(self.info_punto[0]/(self.moltiplicatore_coord+0.0000000000000001)))**2+\
             ((corpo[1]/(self.moltiplicatore_coord+0.0000000000000001))-(self.info_punto[1]/(self.moltiplicatore_coord+0.0000000000000001)))**2
-            g=dec(6.67*(10**-11)*(corpo[2]/(self.moltiplicatore_massa+0.0000000000000001))/(d_quadro+0.0000000000000001))
+            g=dec((6.67*10**-11)*(corpo[2]/(self.moltiplicatore_massa+0.0000000000000001))/(d_quadro+0.0000000000000001))
             self.lista_campi.append(g)
 
 
