@@ -1,7 +1,6 @@
 f=open("dati.txt")
 f=f.read()
 dati=f.split("\n")
-print(dati)
-
-dati.pop(-6)
-print(dati)
+for count in range(9):
+    dati.pop(-1)
+print(dati.index('50'))
