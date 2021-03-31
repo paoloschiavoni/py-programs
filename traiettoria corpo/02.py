@@ -2,6 +2,9 @@ from turtle import Turtle, Screen
 from numpy import *
 import math
 from decimal import Decimal as dec
+import sys
+
+sys.setrecursionlimit(1000000000)
 
 class Traiettoria(Turtle):
 
@@ -27,6 +30,7 @@ class Traiettoria(Turtle):
         self.lunghezza=550
         self.altezza_foraxes=900#quelle per disegnare gli assi
         self.lunghezza_foraxes=1650
+        self.contatore_partenza=0
 
         dati=open("dati.txt")
         dati=dati.read()
@@ -58,6 +62,7 @@ class Traiettoria(Turtle):
             if dati.index(dato) %3==2:
                 massa=int(dato)
                 self.lista_corpi.append([x, y, massa])
+        print(self.lista_corpi)
 
     def analizza_corpi(self):
         max_x=0
@@ -76,8 +81,8 @@ class Traiettoria(Turtle):
 
 
     def change_coordinates_foraxes(self):
-        x_max=(self.lunghezza/2)/(self.massimi[0]+0.0000000000000001)
-        y_max=(self.altezza/2)/(self.massimi[1]+0.0000000000000001)
+        x_max=(self.lunghezza/2)/abs(self.massimi[0]+0.0000000000000001)
+        y_max=(self.altezza/2)/abs(self.massimi[1]+0.0000000000000001)
         self.moltiplicatore_massa=20/(self.massimi[2]+0.0000000000000001)
 
         if x_max>=y_max:
@@ -92,10 +97,12 @@ class Traiettoria(Turtle):
         for corpo in self.lista_corpi:
             corpo[2]*=self.moltiplicatore_massa
 
-        self.info_punto[0]*=abs(self.moltiplicatore_coord)
-        self.info_punto[1]*=abs(self.moltiplicatore_coord)
-        self.info_punto[2]*=abs(self.moltiplicatore_coord)
-        self.info_punto[3]*=abs(self.moltiplicatore_coord)
+        self.info_punto[0]*=self.moltiplicatore_coord
+        self.info_punto[1]*=self.moltiplicatore_coord
+        self.info_punto[2]*=self.moltiplicatore_coord
+        self.info_punto[3]*=self.moltiplicatore_coord
+
+        print(self.lista_corpi)
 
 
 
@@ -147,7 +154,6 @@ class Traiettoria(Turtle):
             ", "+str(corpo[1]/(self.moltiplicatore_coord+0.0000000000000001))+" )")
             self.t.up()
             self.t.goto(round(self.info_punto[0]), round(self.info_punto[1]))
-            self.t.down()
             self.t.speed(2)
             count+=1
 
@@ -161,13 +167,15 @@ class Traiettoria(Turtle):
         for corpo in self.lista_corpi:
             if self.info_punto[0]<(corpo[0]+5) and self.info_punto[0]>(corpo[0]-5):
                 if self.info_punto[1]<(corpo[1]+5) and self.info_punto[1]>(corpo[0]-5):
-                    self.t.up()
-                    while 1:
-                        self.t.forward(1)
-                    return False
+                    self.end_program()
         else:
             return True
 
+    def end_program(self):
+        self.t.up()
+        while 1:
+            self.t.forward(1)
+        return False
 
     def nuovo_punto(self):
         self.calcola_campi()
@@ -179,8 +187,13 @@ class Traiettoria(Turtle):
         self.info_punto[2]+=float(self.componente_campo_x*dec(self.moltiplicatore_coord))
         self.info_punto[3]+=float(self.componente_campo_y*dec(self.moltiplicatore_coord))
 
+
         self.info_punto[0]+=(self.info_punto[2])
         self.info_punto[1]+=(self.info_punto[3])
+
+        print(self.info_punto[0], self.info_punto[1])
+
+        self.t.down()
 
         self.disegna_punto()
 
@@ -234,9 +247,7 @@ class Traiettoria(Turtle):
         for campo in self.lista_campi_y:
             self.componente_campo_y+=campo
 
-
         self.campo_tot=dec(math.sqrt((self.componente_campo_x)**2+(self.componente_campo_y)**2))
-
 
     def calcola_angolo_finale(self):
         self.angolo_finale=dec(arctan(float(self.componente_campo_y/self.componente_campo_x)))

@@ -2,6 +2,9 @@ from turtle import Turtle, Screen
 from numpy import *
 import math
 from decimal import Decimal as dec
+import sys
+
+sys.setrecursionlimit(1000000000)
 
 class Traiettoria(Turtle):
 
@@ -33,17 +36,19 @@ class Traiettoria(Turtle):
 
         dati=dati.split("\n")
 
-        vyp=int(dati[-2])
-        vxp=int(dati[-3])
-        yp=int(dati[-4])
-        xp=int(dati[-5])
+        self.s_max=int(dati[-2])
+
+        vyp=int(dati[-4])
+        vxp=int(dati[-5])
+        yp=int(dati[-6])
+        xp=int(dati[-7])
 
         self.info_punto.append(xp)
         self.info_punto.append(yp)
         self.info_punto.append(vxp)
         self.info_punto.append(vyp)
 
-        for count in range(6):
+        for count in range(8):
             dati.pop(-1)
 
         x=0
@@ -58,6 +63,7 @@ class Traiettoria(Turtle):
             if dati.index(dato) %3==2:
                 massa=int(dato)
                 self.lista_corpi.append([x, y, massa])
+        print(self.lista_corpi)
 
     def analizza_corpi(self):
         max_x=0
@@ -76,8 +82,8 @@ class Traiettoria(Turtle):
 
 
     def change_coordinates_foraxes(self):
-        x_max=(self.lunghezza/2)/(self.massimi[0]+0.0000000000000001)
-        y_max=(self.altezza/2)/(self.massimi[1]+0.0000000000000001)
+        x_max=(self.lunghezza/2)/abs(self.massimi[0]+0.0000000000000001)
+        y_max=(self.altezza/2)/abs(self.massimi[1]+0.0000000000000001)
         self.moltiplicatore_massa=20/(self.massimi[2]+0.0000000000000001)
 
         if x_max>=y_max:
@@ -92,10 +98,12 @@ class Traiettoria(Turtle):
         for corpo in self.lista_corpi:
             corpo[2]*=self.moltiplicatore_massa
 
-        self.info_punto[0]*=abs(self.moltiplicatore_coord)
-        self.info_punto[1]*=abs(self.moltiplicatore_coord)
-        self.info_punto[2]*=abs(self.moltiplicatore_coord)
-        self.info_punto[3]*=abs(self.moltiplicatore_coord)
+        self.info_punto[0]*=self.moltiplicatore_coord
+        self.info_punto[1]*=self.moltiplicatore_coord
+        self.info_punto[2]*=self.moltiplicatore_coord
+        self.info_punto[3]*=self.moltiplicatore_coord
+
+        print(self.lista_corpi)
 
 
 
@@ -147,7 +155,6 @@ class Traiettoria(Turtle):
             ", "+str(corpo[1]/(self.moltiplicatore_coord+0.0000000000000001))+" )")
             self.t.up()
             self.t.goto(round(self.info_punto[0]), round(self.info_punto[1]))
-            self.t.down()
             self.t.speed(2)
             count+=1
 
@@ -159,15 +166,22 @@ class Traiettoria(Turtle):
 
     def continua_traiettoria(self):
         for corpo in self.lista_corpi:
-            if self.info_punto[0]<(corpo[0]+5) and self.info_punto[0]>(corpo[0]-5):
-                if self.info_punto[1]<(corpo[1]+5) and self.info_punto[1]>(corpo[0]-5):
-                    self.t.up()
-                    while 1:
-                        self.t.forward(1)
-                    return False
+            if self.info_punto[0]<(corpo[0]+(corpo[2]/4)) and self.info_punto[0]>(corpo[0]-(corpo[2]/4)):
+                if self.info_punto[1]<(corpo[1]+(corpo[2]/4)) and self.info_punto[1]>(corpo[0]-(corpo[2]/4)):
+                    self.end_program()
+
+        if self.info_punto[0]<-(self.lunghezza_foraxes*2/3) or self.info_punto[0]>(self.lunghezza_foraxes*2/3) or \
+        self.info_punto[1]<-(self.altezza_foraxes*2/3) or self.info_punto[1]>(self.altezza_foraxes*2/3):
+            self.end_program()
+
         else:
             return True
 
+    def end_program(self):
+        self.t.up()
+        while 1:
+            self.t.forward(1)
+        return False
 
     def nuovo_punto(self):
         self.calcola_campi()
@@ -179,10 +193,24 @@ class Traiettoria(Turtle):
         self.info_punto[2]+=float(self.componente_campo_x*dec(self.moltiplicatore_coord))
         self.info_punto[3]+=float(self.componente_campo_y*dec(self.moltiplicatore_coord))
 
+        self.controlla_v()
+        #se lo spostamento con un solo vettore è maggiore di un tot di pixel (inseriti dall'utente)
+        #significa che il punto è passatto molto vicino al corpo e la sua velocità è aumentata troppo
+        #quindi o il corpo è passato molto vicino ed ha ripreso velocità, oppure nella realtà si è schiantato sul pianeta
+
         self.info_punto[0]+=(self.info_punto[2])
         self.info_punto[1]+=(self.info_punto[3])
 
+        print(self.info_punto[0], self.info_punto[1])
+
+        self.t.down()
+
         self.disegna_punto()
+
+    def controlla_v(self):
+        v_punto=math.sqrt(self.info_punto[2]**2+self.info_punto[3]**2)
+        if v_punto>50:
+            self.end_program()
 
     def calcola_campi(self):
         self.lista_campi=[]
@@ -234,9 +262,7 @@ class Traiettoria(Turtle):
         for campo in self.lista_campi_y:
             self.componente_campo_y+=campo
 
-
         self.campo_tot=dec(math.sqrt((self.componente_campo_x)**2+(self.componente_campo_y)**2))
-
 
     def calcola_angolo_finale(self):
         self.angolo_finale=dec(arctan(float(self.componente_campo_y/self.componente_campo_x)))
