@@ -19,6 +19,7 @@ organizzare i dati, nel file dati.txt così:
 12
 13 spostamento massimo
 14 raggio pianeti(pixel)
+15
 
 lo spostamento massimo è il massimo valore che voglio dare al corpo per muoversi.
 in realtà questo valore non dovrebbe esserci, ma dato che se il punto passa molto
@@ -60,6 +61,9 @@ class Traiettoria(Turtle):
         self.altezza_foraxes=900#quelle per disegnare gli assi
         self.lunghezza_foraxes=1650
         self.contatore=0
+        self.spessore_max=5
+        self.spessore=1
+        self.recursioni_max=1220#arrotondare a un multiplo di spesssore max
 
         dati=open("dati.txt")
         dati=dati.read()
@@ -184,13 +188,13 @@ class Traiettoria(Turtle):
             ", "+str(corpo[1]/(self.moltiplicatore_coord+0.0000000000000001))+" )")
             self.t.up()
             self.t.goto(round(self.info_punto[0]), round(self.info_punto[1]))
-            self.t.speed(2)
+            self.t.speed(0)
             count+=1
 
 
     def disegna_punto(self):
         self.contatore+=1
-        if self.contatore>1220:
+        if self.contatore>(self.recursioni_max):
             self.end_program()
         self.t.goto(round(self.info_punto[0]), round(self.info_punto[1]))
         self.nuovo_punto()
@@ -229,8 +233,22 @@ class Traiettoria(Turtle):
         self.calcola_campo_tot()
         self.calcola_angolo_finale()
 
-        self.info_punto[2]+=float(self.componente_campo_x*dec(self.moltiplicatore_coord))
-        self.info_punto[3]+=float(self.componente_campo_y*dec(self.moltiplicatore_coord))
+        vfx=((float((2*self.componente_campo_x*dec(self.moltiplicatore_coord)+dec(self.info_punto[2])**2))))
+        moltx=1
+        if vfx<0:
+            moltx=-1
+        if vfx>0:
+            moltx=1
+
+        vfy=((float((2*self.componente_campo_y*dec(self.moltiplicatore_coord)+dec(self.info_punto[3])**2))))
+        molty=1
+        if vfy<0:
+            molty=-1
+        if vfy>0:
+            molty=1
+
+        self.info_punto[2]=math.sqrt(float((2*self.componente_campo_x*dec(self.moltiplicatore_coord)+dec(self.info_punto[2])**2))*moltx)*moltx
+        self.info_punto[3]=math.sqrt(float((2*self.componente_campo_y*dec(self.moltiplicatore_coord)+dec(self.info_punto[3])**2))*molty)*molty
 
         self.continua_traiettoria()
 
@@ -238,7 +256,10 @@ class Traiettoria(Turtle):
         self.info_punto[1]+=(self.info_punto[3])
 
         print(self.info_punto[0], self.info_punto[1])
-
+        print(self.contatore)
+        if self.contatore%(self.recursioni_max/self.spessore_max)==0:
+            self.spessore+=1
+            self.t.width(self.spessore)
         self.t.down()
 
         self.disegna_punto()

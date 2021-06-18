@@ -8,17 +8,19 @@ organizzare i dati, nel file dati.txt così:
 1 x corpo 1
 2 y corpo 1
 3  massa corpo 1
-4 x corpo n
-5 y corpo n
-6 massa corpo n
-7
-8 x punto
-9 y punto
-10 velocità x punto
-11 velocità y punto
-12
-13 spostamento massimo
-14 raggio pianeti(pixel)
+4 raggio corpo 1
+5 x corpo n
+6 y corpo n
+7 massa corpo n
+8 raggio corpo n (scrivere: 18p se 18 pixel, 100m se 100 m)
+9
+10 x punto
+11 y punto
+12 velocità x punto
+13 velocità y punto
+14
+15 spostamento rischioso
+16
 
 lo spostamento massimo è il massimo valore che voglio dare al corpo per muoversi.
 in realtà questo valore non dovrebbe esserci, ma dato che se il punto passa molto
@@ -48,6 +50,7 @@ class Traiettoria(Turtle):
         self.input()
         self.analizza_corpi()
         self.change_coordinates_foraxes()
+        self.change_raggio()
         self.disegna_assi()
         self.disegna_corpi()
         self.disegna_punto()
@@ -60,45 +63,46 @@ class Traiettoria(Turtle):
         self.altezza_foraxes=900#quelle per disegnare gli assi
         self.lunghezza_foraxes=1650
         self.contatore=0
+        self.spessore_max=5
+        self.spessore=1
+        self.recursioni_max=1220#arrotondare a un multiplo di spesssore max
 
         dati=open("dati.txt")
         dati=dati.read()
 
         dati=dati.split("\n")
 
-        self.raggio_pianeti=int(dati[-2])
-        self.s_max=int(dati[-3])
+        self.s_rischioso=int(dati[-2])#se ho uno spostamento così, controllo che il putno non si sia schiantato
 
-        vyp=int(dati[-5])
-        vxp=int(dati[-6])
-        yp=int(dati[-7])
-        xp=int(dati[-8])
+        vyp=int(dati[-4])
+        vxp=int(dati[-5])
+        yp=int(dati[-6])
+        xp=int(dati[-7])
 
         self.info_punto.append(xp)
         self.info_punto.append(yp)
         self.info_punto.append(vxp)
         self.info_punto.append(vyp)
 
-        for count in range(9):
+        for count in range(8):
             dati.pop(-1)
 
         x=0
         y=0
         massa=0
+        raggio=""
 
-        for count in range(int((len(dati)/3))):
-            [x, y, massa]=[int(dati[0]), int(dati[1]), int(dati[2])]
-            self.lista_corpi.append([x, y, massa])
-            for i in range(3):
+        for count in range(int((len(dati)/4))):
+            [x, y, massa, raggio]=[int(dati[0]), int(dati[1]), int(dati[2]), dati[3]]
+            self.lista_corpi.append([x, y, massa, raggio])
+            for i in range(4):
                 dati.pop(0)
-
 
     def analizza_corpi(self):
         max_x=0
         max_y=0
-        max_massa=0
-        self.massimi=[max_x, max_y, max_massa]
-        for i in range(3):
+        self.massimi=[max_x, max_y]
+        for i in range(2):
             for corpo in self.lista_corpi:
                 if abs(corpo[i])>abs(self.massimi[i]):
                     self.massimi[i]=abs(corpo[i])
@@ -112,7 +116,6 @@ class Traiettoria(Turtle):
     def change_coordinates_foraxes(self):
         x_max=(self.lunghezza/2)/abs(self.massimi[0]+0.0000000000000001)
         y_max=(self.altezza/2)/abs(self.massimi[1]+0.0000000000000001)
-        self.moltiplicatore_massa=2*self.raggio_pianeti/(self.massimi[2]+0.0000000000000001)
 
         if x_max>=y_max:
             self.moltiplicatore_coord=y_max
@@ -123,16 +126,22 @@ class Traiettoria(Turtle):
             for corpo in self.lista_corpi:
                 corpo[i]*=self.moltiplicatore_coord
 
-        for corpo in self.lista_corpi:
-            corpo[2]*=self.moltiplicatore_massa
-
         self.info_punto[0]*=self.moltiplicatore_coord
         self.info_punto[1]*=self.moltiplicatore_coord
         self.info_punto[2]*=self.moltiplicatore_coord
         self.info_punto[3]*=self.moltiplicatore_coord
 
-        print(self.lista_corpi)
+    def change_raggio(self):
+        for corpo in self.lista_corpi:
+            if "p" in corpo[3]:
+                corpo[3]=corpo[3].replace("p", "")
+                corpo[3]=int(corpo[3])
+            else:
+                corpo[3]=corpo[3].replace("m", "")
+                corpo[3]=float(corpo[3])
+                corpo[3]*=self.moltiplicatore_coord
 
+        print(self.lista_corpi)
 
 
     def disegna_assi(self):
@@ -177,20 +186,22 @@ class Traiettoria(Turtle):
         count=1
         for corpo in self.lista_corpi:
             self.t.goto(corpo[0], corpo[1])
-            self.t.dot(corpo[2], "black")
+            self.t.dot(corpo[3], "black")
             self.t.goto(corpo[0]+20, corpo[1]+20)
             self.t.write("m"+str(count)+\
             " ( "+str(corpo[0]/(self.moltiplicatore_coord+0.0000000000000001))+\
-            ", "+str(corpo[1]/(self.moltiplicatore_coord+0.0000000000000001))+" )")
+            ", "+str(corpo[1]/(self.moltiplicatore_coord+0.0000000000000001))+\
+            ", "+str(corpo[2])+\
+            ", "+str(corpo[3]/(self.moltiplicatore_coord+0.0000000000000001))+" )")
             self.t.up()
             self.t.goto(round(self.info_punto[0]), round(self.info_punto[1]))
-            self.t.speed(2)
+            self.t.speed(0)
             count+=1
 
 
     def disegna_punto(self):
         self.contatore+=1
-        if self.contatore>1220:
+        if self.contatore>(self.recursioni_max):
             self.end_program()
         self.t.goto(round(self.info_punto[0]), round(self.info_punto[1]))
         self.nuovo_punto()
@@ -198,10 +209,11 @@ class Traiettoria(Turtle):
     def continua_traiettoria(self):#condizioni affinche il punto possa continuare Traiettoria
 
         for corpo in self.lista_corpi:
-            if self.info_punto[0]<(corpo[0]+self.raggio_pianeti) and self.info_punto[0]>(corpo[0]-self.raggio_pianeti):
-                if self.info_punto[1]<(corpo[1]+self.raggio_pianeti) and self.info_punto[1]>(corpo[1]-self.raggio_pianeti):
-                    print('schiantato')
+            if self.info_punto[0]<(corpo[0]+corpo[3]) and self.info_punto[0]>(corpo[0]-corpo[3]):
+                if self.info_punto[1]<(corpo[1]+corpo[3]) and self.info_punto[1]>(corpo[1]-corpo[3]):
+                    print('schiantato')#se il punto ci si ferma dentro
                     self.end_program()
+
 
         if self.info_punto[0]<-(self.lunghezza_foraxes*2/3) or self.info_punto[0]>(self.lunghezza_foraxes*2/3) or \
         self.info_punto[1]<-(self.altezza_foraxes*2/3) or self.info_punto[1]>(self.altezza_foraxes*2/3):
@@ -209,12 +221,30 @@ class Traiettoria(Turtle):
             self.end_program()
 
         v_punto=math.sqrt(self.info_punto[2]**2+self.info_punto[3]**2)
-        if v_punto>self.s_max:
-            print('sparato via')
-            self.end_program()
-            #se lo spostamento con un solo vettore è maggiore di un tot di pixel (inseriti dall'utente)
-            #significa che il punto è passatto molto vicino al corpo e la sua velocità è aumentata troppo
-            #quindi o il corpo è passato molto vicino ed ha ripreso velocità, oppure nella realtà si è schiantato sul pianeta
+        if v_punto>self.s_rischioso:
+            if self.controlla_schianto():
+                print('schiantato')#se il punto passa per un pianeta
+                self.end_program()
+
+    def controlla_schianto(self):
+        x1=self.info_punto[0]
+        x2=self.info_punto[0]+self.info_punto[2]
+        y1=self.info_punto[1]
+        y2=self.info_punto[1]+self.info_punto[3]
+        potenza=0
+
+        m=(y1-y2)/(x1-x2)
+        q=y1-m*x1
+
+        for x in range(round(x1), round(x2)):
+            y=m*x+q
+
+            for corpo in self.lista_corpi:
+                potenza=(x-corpo[0])**2+(y-corpo[1])**2-corpo[3]**2
+                if potenza<0:
+                    self.t.goto(corpo[0], corpo[1])
+                    return True
+
 
     def end_program(self):
         self.t.up()
@@ -239,6 +269,9 @@ class Traiettoria(Turtle):
 
         print(self.info_punto[0], self.info_punto[1])
 
+        if self.contatore%(self.recursioni_max/self.spessore_max)==0:
+            self.spessore+=1
+            self.t.width(self.spessore)
         self.t.down()
 
         self.disegna_punto()
@@ -247,9 +280,11 @@ class Traiettoria(Turtle):
     def calcola_campi(self):
         self.lista_campi=[]
         for corpo in self.lista_corpi:
-            d_quadro=((corpo[0]/(self.moltiplicatore_coord+0.0000000000000001))-(self.info_punto[0]/(self.moltiplicatore_coord+0.0000000000000001)))**2+\
-            ((corpo[1]/(self.moltiplicatore_coord+0.0000000000000001))-(self.info_punto[1]/(self.moltiplicatore_coord+0.0000000000000001)))**2
-            g=dec(6.67*(10**-11)*(corpo[2]/(self.moltiplicatore_massa+0.0000000000000001))/(d_quadro+0.0000000000000001))
+            d_quadro=((corpo[0]/(self.moltiplicatore_coord+0.0000000000000001))-\
+            (self.info_punto[0]/(self.moltiplicatore_coord+0.0000000000000001)))**2+\
+            ((corpo[1]/(self.moltiplicatore_coord+0.0000000000000001))-\
+            (self.info_punto[1]/(self.moltiplicatore_coord+0.0000000000000001)))**2
+            g=dec(6.67*(10**-11)*corpo[2]/(d_quadro+0.0000000000000001))
             self.lista_campi.append(g)
 
 
