@@ -6,7 +6,7 @@ class TrisComputer(Frame):
         self.grid()
 
         self.master.title("Tris")
-        
+
         self.b1=Button(self, text=" X  ")
         self.b2=Button(self, text="    ", command=self.change3)
         self.b3=Button(self, text="    ", command=self.change4)
@@ -46,7 +46,7 @@ class TrisComputer(Frame):
         self.b4["command"]=self.change1_2
         self.b6["command"]=self.change1_2
         self.b8["command"]=self.change1_2
-        
+
     def change1_1(self):
         self.b3["text"]=" O  "
 
@@ -62,7 +62,7 @@ class TrisComputer(Frame):
 
     def change1_1_1(self):
         self.b2["text"]=" O  "
-        
+
         self.b4["text"]=" X  "
         self.statusLabel["text"]="Hai perso!"
 
@@ -90,7 +90,7 @@ class TrisComputer(Frame):
         self.b4["text"]=" O "
         self.b7["text"]=" X "
         self.statusLabel["text"]="Hai perso!"
-    
+
 #######################
 ####################### FINITO CHANGE 1
 #######################
@@ -265,8 +265,8 @@ class TrisComputer(Frame):
         self.statusLabel["text"]="Hai perso!"
 
 ############# FINE CHANGE 5
-        
-        
+
+
     def reset(self):
         self.b1["text"]=" X "
         self.b2["text"]="    "
@@ -293,7 +293,7 @@ class TrisComputer(Frame):
 
 
 
-        
+
 def main():
     print("Da quando ci sarà scritto che qualcuno vince, \nil gioco non andrà più avanti regolarmente, \
 \ncliccare rest per rigiocare\n\nSe qualche mossa viene modificata, \
